@@ -96,11 +96,25 @@ FastAPI will allow us to enable communication with our OCR service from other pr
 4. Run the following curl command (may require git bash on Windows):
 `curl 127.0.0.1:8000/video`
 5. Confirm that a list of videos and URLs is returned by copying the output below:
-> Description
+> {"count":1,"videos":[{"id":"demo","path":"../resources/oop.mp4","_links":{"self":"/video/demo","frame_example":"/video/demo/frame/1.0"}}]}
 6. What are the names of the two processes that just communicated?
 >
 6. Modify the simple_api.py so that it works correctly with your implementation and complete any TODO markers
 7. Demonstrate the use of at least two other end points below:
->
+> First endpoint: /video/{vid}/frame/{t}
+> 
+> This endpoint serves the frame at a requested time point as an image 
+> When we have a GET request at 127.0.0.1:8000/video/demo/frame/4, video_frame() gets called which calls _open_vid_or_404() with the provided 'vid'.
+> The 'vid' is found inside VIDEOS by _open_vid_or_404(), and it returns a CodingVideo object. 
+> Then video_frame() calls get_image_as_bytes() on that CodingVideo object with the specified time 't' to return the video frame as raw bytes 
+> This results in an image of the video frame being generated 
+> 
+> Second endpoint: /video/{vid}/frame/{t}/ocr
+> 
+> This endpoint serves a GET request, for example, at 127.0.0.1:8000/video/demo/frame/4/ocr
+> It does the exact same thing as the endpoint above but rather than returning a Response with raw bytes data as an image, this endpoint uses 
+> get_text_from_time() to return a dictionary containing the text in the frame at the given time 't' 
+> 
+> 
 >
 >

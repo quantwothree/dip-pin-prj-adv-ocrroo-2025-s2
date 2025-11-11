@@ -18,15 +18,26 @@ app = FastAPI()
 # We'll create a lightweight "database" for our videos
 # You can add uploads later (not required for assessment)
 # For now, we will just hardcode are samples
+# VIDEOS: dict[str, Path] = {
+#     "demo": Path("../resources/oop.mp4")
+# }
+
 VIDEOS: dict[str, Path] = {
-    "demo": Path("../resources/oop.mp4")
+    "demo": Path(__file__).resolve().parent.parent / "resources" / "oop.mp4"
 }
 
 class VideoMetaData(BaseModel):
+
+#BaseModel is used to define data models with type hints
+#Could think of it like Models in Laravel
+
     fps: float
     frame_count: int
     duration_seconds: float
     _links: dict | None = None
+
+#Pydantic will automatically validate those attributes againts their expexted data types
+#And raises ValidationError if it's not the right data type
 
 @app.get("/video")
 def list_videos():
@@ -45,6 +56,19 @@ def list_videos():
             for vid, path in VIDEOS.items()
         ]
     }
+#The reason why the for loop is at the bottom is because this is just a cleaner way to write it
+#It does exactly this:
+# video_list = []
+# for vid, path in VIDEOS.items():
+#     video_list.append({
+#         "id": vid,
+#         "path": str(path),
+#         "_links": {
+#             "self": f"/video/{vid}",
+#             "frame_example": f"/video/{vid}/frame/1.0"
+#         }
+#     })
+
 
 def _open_vid_or_404(vid: str) -> CodingVideo:
     path = VIDEOS.get(vid)
@@ -80,9 +104,17 @@ def video(vid: str):
 @app.get("/video/{vid}/frame/{t}", response_class=Response)
 def video_frame(vid: str, t: float):
     try:
-        video = _open_vid_or_404(vid)
+        video = _open_vid_or_404(vid) #This is now a CodingVideo object
         return Response(content=video.get_image_as_bytes(t), media_type="image/png")
     finally:
       video.capture.release()
 
 # TODO: add enpoint to get ocr e.g. /video/{vid}/frame/{t}/ocr
+@app.get("/video/{vid}/frame/{t}/ocr")
+def video_frame_ocr(vid: str, t: float):
+    try:
+        video = _open_vid_or_404(vid)
+        text = video.get_text_from_time(t)
+        return {"text": text}
+    finally:
+        video.capture.release()

@@ -21,7 +21,8 @@ import tesserocr
 
 
 VID_PATH = Path("../resources/oop.mp4")
-TESSDATA_FOLDER = "../resources/"
+# TESSDATA_FOLDER = "../resources/"
+TESSDATA_FOLDER = Path(__file__).resolve().parent.parent / "resources"
 IMAGE_PATH = Path("../resources/input.png")
 
 class CodingVideo:
@@ -89,7 +90,8 @@ class CodingVideo:
         image = Image.fromarray(rgb_array)
 
         # PyTessBaseAPI takes the folder containing the tessdata file as 'path' and also the language as 'lang'
-        api = tesserocr.PyTessBaseAPI(path=TESSDATA_FOLDER, lang='eng')
+        # 'path' paremeter for PyTessBaseAPI needs to be a str, TESSDATA_FOLDER is as Path pbject
+        api = tesserocr.PyTessBaseAPI(path=str(TESSDATA_FOLDER), lang='eng')
         api.SetImage(image)
         return api.GetUTF8Text()
 
@@ -99,13 +101,13 @@ class CodingVideo:
         image = Image.fromarray(rgb_array)
 
         # PyTessBaseAPI takes the folder containing the tessdata file as 'path' and also the language as 'lang'
-        api = tesserocr.PyTessBaseAPI(path=TESSDATA_FOLDER, lang='eng')
+        api = tesserocr.PyTessBaseAPI(path=str(TESSDATA_FOLDER), lang='eng')
         api.SetImage(image)
         return api.GetUTF8Text()
 
     def get_text_from_image(self, image: Path | str) -> str:
 
-        api = tesserocr.PyTessBaseAPI(path=TESSDATA_FOLDER, lang='eng')
+        api = tesserocr.PyTessBaseAPI(path=str(TESSDATA_FOLDER), lang='eng')
         api.SetImageFile(str(image))
         return api.GetUTF8Text()
 
