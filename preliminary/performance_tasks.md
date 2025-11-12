@@ -34,7 +34,7 @@ Complete the steps below and fill in the `> block` sections
 3. Activate the `venv` as instructed by `uv`
 4. In order to complete the project, we need to install OpenCV. Fill in the following:
   - What role does OpenCV have in this project?
-  >
+  > OpenCV allows us to directly interact with any given video by using cv2.VideoCapture
   - What is the `uv pip` command to install OpenCV?
   > `uv pip install opencv-python`
   - What is the URL of this library's git repo?
@@ -46,10 +46,12 @@ Complete the steps below and fill in the `> block` sections
   >Yes, now we have opencv-python>=4.12.0.88 in the dependencies 
   >
 7. Why did we use `uv add` over `uv pip`?
-  >
+  > Because uv add also update the dependencies list automatically 
   >
 8. The `numpy` library is required for OpenCV. Should you add an explicit requirement for it? Why/Why not?
-  >
+  > Yes. Because eventually we will need numpy for opencv to work, therefore adding it to the requirement ensures that
+  > if someone else or if we want to bring the project to a different computer, we only need to run 'uv sync' to automatically
+  > install everything we need for the project to work
   >
 9. Commit the changes so far to git. Use the message `chore: add OpenCV dependency`
 10. Go to `preliminary/library_basics.py` and complete the required functionality.
@@ -71,7 +73,9 @@ Tesseract consists of both an OCR Engine and a command line program. It is predo
 > name of the python library: tesserocr 
 > how long ago was a commit made to the library: 3 weeks, on Oct 10th 2025
 > does it have external dependencies: according to its readme file, it requires libtesseract (>=3.04) and libleptonica (>=1.71)
-> how does it suite the project requirements: 
+> how does it suite the project requirements: tesserocr is suitable for this project because it does not require a tesseract executable like 
+> pytesseract, we don't need to do OCR on PDFs like tesseract-ocr-wrapper does. And we don't need to work with large datasets either,
+> so image2text is overkill. 
 
 4. Use UV to add the dependency to your project and your `pyproject.toml`
 
@@ -98,7 +102,7 @@ FastAPI will allow us to enable communication with our OCR service from other pr
 5. Confirm that a list of videos and URLs is returned by copying the output below:
 > {"count":1,"videos":[{"id":"demo","path":"../resources/oop.mp4","_links":{"self":"/video/demo","frame_example":"/video/demo/frame/1.0"}}]}
 6. What are the names of the two processes that just communicated?
->
+> It's client-server communication, using HTTP over TCP/IP 
 6. Modify the simple_api.py so that it works correctly with your implementation and complete any TODO markers
 7. Demonstrate the use of at least two other end points below:
 > First endpoint: /video/{vid}/frame/{t}
